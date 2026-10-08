@@ -1,0 +1,37 @@
+{
+ "id": "./",
+ "name": "H.H | M.F. Store",
+ "short_name": "HH MF Store",
+ "description": "Catálogo de tenis de H.H | M.F. Store. Elige tus modelos y haz tu pedido por WhatsApp.",
+ "lang": "es",
+ "dir": "ltr",
+ "start_url": "./",
+ "scope": "./",
+ "display": "standalone",
+ "orientation": "any",
+ "background_color": "#080c15",
+ "theme_color": "#080c15",
+ "categories": [
+  "shopping"
+ ],
+ "icons": [
+  {
+   "src": "icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "maskable-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ]
+}
