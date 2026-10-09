@@ -333,6 +333,7 @@ details.section[open] > summary::before{content:"−"}
           <div><label for="pCosto" data-i18n="cost">Costo (R$)</label><input class="field" type="number" inputmode="decimal" min="0" step="0.01" id="pCosto" value="0"></div>
           <div><label for="pPrecio" data-i18n="price">Precio de venta (R$)</label><input class="field" type="number" inputmode="decimal" min="0" step="0.01" id="pPrecio" value="350"></div>
           <div style="align-self:center"><label class="check"><input type="checkbox" id="pActivo" checked><span data-i18n="active">Activo</span></label></div>
+          <div style="align-self:center"><label class="check"><input type="checkbox" id="pPublicado"><span data-i18n="p_publicado">Mostrar en la tienda online</span></label></div>
           <div class="full"><label for="pNotas"><span data-i18n="notes">Notas</span> <span class="hint" data-i18n="optional">(opcional)</span></label><input class="field" id="pNotas" autocomplete="off"></div>
         </div>
         <div class="actions" style="margin-top:14px"><button class="btn btn-primary" type="button" id="pGuardar" data-i18n="p_guardar">Guardar producto</button><button class="btn btn-line" type="button" id="pCancelar" hidden data-i18n="cancel">Cancelar</button></div>
@@ -588,7 +589,7 @@ es: {
   met_pix: "PIX", met_efectivo: "Efectivo", met_credito: "Tarjeta de crédito", met_debito: "Tarjeta de débito", met_transferencia: "Transferencia", met_otro: "Otro",
   est_pagada: "Pagada", est_pendiente: "Pendiente", est_devuelta: "Devuelta", est_anulada: "Anulada",
   p_nuevo: "Nuevo producto", p_editar: "Editar producto {ref}", ref: "Referencia", brand: "Marca", name: "Nombre", model: "Modelo", type: "Tipo",
-  min_stock: "Stock mínimo (para avisar)", cost: "Costo (R$)", price: "Precio de venta (R$)", active: "Activo (se sigue vendiendo)", p_guardar: "Guardar producto", p_ok: "Producto guardado.",
+  min_stock: "Stock mínimo (para avisar)", cost: "Costo (R$)", price: "Precio de venta (R$)", active: "Activo (se sigue vendiendo)", p_publicado: "Mostrar en la tienda online", en_tienda: "en la tienda", no_tienda: "no está en la tienda", p_guardar: "Guardar producto", p_ok: "Producto guardado.",
   i_productos: "Productos, modelos y existencias", search_ph: "Referencia, marca, nombre o modelo", i_productos_n: "Productos", i_unidades: "Unidades en inventario",
   i_valor_costo: "Valor a costo", i_valor_precio: "Valor a precio de venta", i_stock: "Stock",
   cost_l: "costo {s}", price_l: "precio {s}", margin_l: "margen {p}", min_l: "mínimo {n}", sin_costo: "sin costo", e_corto: "Entrada", c_corto: "Contar",
@@ -686,7 +687,7 @@ pt: {
   met_pix: "PIX", met_efectivo: "Dinheiro", met_credito: "Cartão de crédito", met_debito: "Cartão de débito", met_transferencia: "Transferência", met_otro: "Outro",
   est_pagada: "Paga", est_pendiente: "Pendente", est_devuelta: "Devolvida", est_anulada: "Cancelada",
   p_nuevo: "Novo produto", p_editar: "Editar produto {ref}", ref: "Referência", brand: "Marca", name: "Nome", model: "Modelo", type: "Tipo",
-  min_stock: "Estoque mínimo (para avisar)", cost: "Custo (R$)", price: "Preço de venda (R$)", active: "Ativo (continua à venda)", p_guardar: "Salvar produto", p_ok: "Produto salvo.",
+  min_stock: "Estoque mínimo (para avisar)", cost: "Custo (R$)", price: "Preço de venda (R$)", active: "Ativo (continua à venda)", p_publicado: "Mostrar na loja online", en_tienda: "na loja", no_tienda: "fora da loja", p_guardar: "Salvar produto", p_ok: "Produto salvo.",
   i_productos: "Produtos, modelos e estoque", search_ph: "Referência, marca, nome ou modelo", i_productos_n: "Produtos", i_unidades: "Unidades em estoque",
   i_valor_costo: "Valor a custo", i_valor_precio: "Valor a preço de venda", i_stock: "Estoque",
   cost_l: "custo {s}", price_l: "preço {s}", margin_l: "margem {p}", min_l: "mínimo {n}", sin_costo: "sem custo", e_corto: "Entrada", c_corto: "Contar",
@@ -784,7 +785,7 @@ en: {
   met_pix: "PIX", met_efectivo: "Cash", met_credito: "Credit card", met_debito: "Debit card", met_transferencia: "Bank transfer", met_otro: "Other",
   est_pagada: "Paid", est_pendiente: "Pending", est_devuelta: "Returned", est_anulada: "Void",
   p_nuevo: "New product", p_editar: "Edit product {ref}", ref: "Reference", brand: "Brand", name: "Name", model: "Model", type: "Type",
-  min_stock: "Minimum stock (for alerts)", cost: "Cost (R$)", price: "Sale price (R$)", active: "Active (still for sale)", p_guardar: "Save product", p_ok: "Product saved.",
+  min_stock: "Minimum stock (for alerts)", cost: "Cost (R$)", price: "Sale price (R$)", active: "Active (still for sale)", p_publicado: "Show in the online store", en_tienda: "in store", no_tienda: "not in store", p_guardar: "Save product", p_ok: "Product saved.",
   i_productos: "Products, models and stock", search_ph: "Reference, brand, name or model", i_productos_n: "Products", i_unidades: "Units in stock",
   i_valor_costo: "Value at cost", i_valor_precio: "Value at sale price", i_stock: "Stock",
   cost_l: "cost {s}", price_l: "price {s}", margin_l: "margin {p}", min_l: "minimum {n}", sin_costo: "no cost", e_corto: "Stock in", c_corto: "Count",
@@ -1157,7 +1158,8 @@ en: {
   /* ---------- Datos ---------- */
   let D = null;
   const TABLAS = {
-    productos: 'tienda_inventario?select=*&order=ref.asc',
+    productos: 'tienda_productos?select=*&order=ref.asc',
+    existencias: 'tienda_inventario?select=id,stock',
     proveedores: 'tienda_proveedores?select=*&order=nombre.asc',
     ventas: 'tienda_ventas?select=*&order=fecha.desc,id.desc',
     facturas: 'tienda_facturas?select=*&order=fecha.desc,id.desc',
@@ -1175,6 +1177,8 @@ en: {
       const nd = {};
       keys.forEach((k, i) => { nd[k] = res[i].map(r => { NUMS.forEach(f => { if (r[f] != null) r[f] = Number(r[f]); }); return r; }); });
       nd.ventas.forEach(v => { if (!Array.isArray(v.items)) v.items = []; });
+      const st = new Map(nd.existencias.map(x => [x.id, x.stock])); delete nd.existencias;
+      nd.productos.forEach(p => { p.stock = st.get(p.id) || 0; });
       nd.prod = new Map(nd.productos.map(p => [p.id, p]));
       nd.prov = new Map(nd.proveedores.map(p => [p.id, p]));
       nd.fac = new Map(nd.facturas.map(f => [f.id, f]));
@@ -1413,6 +1417,7 @@ en: {
       p.stock_minimo ? t('min_l', { n: p.stock_minimo }) : '', p.notas].filter(Boolean).join(' · ');
     return '<div class="row' + (p.activo ? '' : ' off') + '" data-id="' + p.id + '"><div class="main"><b>' + esc(p.ref) + '</b> · ' + esc(pnom(p)) +
       (p.activo ? '' : ' <span class="badge">' + esc(t('inactive')) + '</span>') + (p.costo > 0 ? '' : ' <span class="badge warn">' + esc(t('sin_costo')) + '</span>') +
+      (p.publicado === false ? ' <span class="badge">' + esc(t('no_tienda')) + '</span>' : (p.activo ? ' <span class="badge blue">' + esc(t('en_tienda')) + '</span>' : '')) +
       '<div class="sub">' + esc(det) + '</div></div>' +
       '<div class="amt"><span class="badge ' + cls + '">' + esc(t('units', { n: int(p.stock) })) + '</span><small>' + money(Math.max(p.stock, 0) * p.costo) + '</small></div>' +
       '<div class="acts">' + btn('p-entrada', t('e_corto')) + btn('p-conteo', t('c_corto')) + btn('p-editar', t('edit')) + '</div></div>';
@@ -1430,14 +1435,14 @@ en: {
   function resetProducto() {
     EDIT_P = null;
     ['pRef', 'pMarca', 'pNombre', 'pModelo', 'pNotas'].forEach(i => setv(i, ''));
-    setv('pTipo', 'Tenis'); setv('pMinimo', 0); setv('pCosto', 0); setv('pPrecio', 350); $('#pActivo').checked = true;
+    setv('pTipo', 'Tenis'); setv('pMinimo', 0); setv('pCosto', 0); setv('pPrecio', 350); $('#pActivo').checked = true; $('#pPublicado').checked = false;
     $('#pCancelar').hidden = true; titulos();
   }
   function editarProducto(id) {
     const p = D.prod.get(id); if (!p) return;
     EDIT_P = id;
     setv('pRef', p.ref); setv('pMarca', p.marca); setv('pNombre', p.nombre); setv('pModelo', p.modelo); setv('pTipo', p.tipo);
-    setv('pMinimo', p.stock_minimo); setv('pCosto', p.costo); setv('pPrecio', p.precio); $('#pActivo').checked = !!p.activo; setv('pNotas', p.notas);
+    setv('pMinimo', p.stock_minimo); setv('pCosto', p.costo); setv('pPrecio', p.precio); $('#pActivo').checked = !!p.activo; $('#pPublicado').checked = p.publicado !== false; setv('pNotas', p.notas);
     $('#pCancelar').hidden = false; msg('#pMsg', ''); titulos(); abrir('#prodBox', '#pNombre');
   }
   function sugerirRef() {
@@ -1581,7 +1586,8 @@ en: {
           [t('v_talla'), i => i.talla], [t('qty'), i => i.cantidad], [t('v_precio'), i => i.precio], [t('cost'), i => i.costo], [t('total'), i => i.cantidad * i.precio]]],
       inventario: () => [D.productos, [[t('ref'), p => p.ref], [t('brand'), p => p.marca], [t('name'), p => p.nombre], [t('model'), p => p.modelo], [t('type'), p => p.tipo],
         [t('cost'), p => p.costo], [t('price'), p => p.precio], [t('i_stock'), p => p.stock], [t('min_stock'), p => p.stock_minimo], [t('i_valor_costo'), p => Math.max(p.stock, 0) * p.costo],
-        [t('i_valor_precio'), p => Math.max(p.stock, 0) * p.precio], [t('active'), p => (p.activo ? t('yes') : t('no'))], [t('notes'), p => p.notas]]],
+        [t('i_valor_precio'), p => Math.max(p.stock, 0) * p.precio], [t('active'), p => (p.activo ? t('yes') : t('no'))],
+        [t('p_publicado'), p => (p.publicado !== false && p.activo ? t('yes') : t('no'))], [t('notes'), p => p.notas]]],
       movimientos: () => [D.movimientos.filter(m => enP(m.fecha)), [[t('date'), m => m.fecha], [t('type'), m => t('tipo_' + m.tipo)], [t('ref'), m => (prod(m.producto_id) || {}).ref],
         [t('v_producto'), m => pnom(prod(m.producto_id))], [t('qty'), m => m.cantidad], [t('e_costo'), m => m.costo_unitario], [t('e_lote'), m => m.lote], [t('e_vence'), m => m.vencimiento],
         [t('e_proveedor'), m => prvName(m.proveedor_id)], [t('x_venta'), m => m.venta_id], [t('e_factura'), m => { const f = m.factura_id && D.fac.get(m.factura_id); return f ? f.numero || '#' + f.id : ''; }], [t('note'), m => m.nota]]],
@@ -1596,7 +1602,7 @@ en: {
     const sello = (P.desde || 'inicio') + '_' + (P.hasta || hoy());
     if (k === 'json') {
       const copia = { tienda: 'H.H | M.F. Store', exportado: new Date().toISOString() };
-      Object.keys(TABLAS).forEach(x => { copia[x] = D[x]; });
+      Object.keys(TABLAS).filter(x => x !== 'existencias').forEach(x => { copia[x] = D[x]; });
       descargar('contabilidad-hhmf-' + hoy() + '.json', JSON.stringify(copia, null, 1), 'application/json');
       msg('#xMsg', t('x_ok_json'), 'ok'); return;
     }
@@ -1720,7 +1726,7 @@ en: {
       if (falta.length) fail('req', { c: falta.join(', ') });
       const body = { ref, marca: val('pMarca') || null, nombre, modelo: val('pModelo') || null, tipo: val('pTipo') || 'Tenis',
         stock_minimo: Math.max(0, parseInt(val('pMinimo') || '0', 10) || 0), costo: Math.max(0, r2(numv('pCosto') || 0)), precio: Math.max(0, r2(numv('pPrecio') || 0)),
-        activo: $('#pActivo').checked, notas: val('pNotas') || null };
+        activo: $('#pActivo').checked, publicado: $('#pPublicado').checked, notas: val('pNotas') || null };
       if (EDIT_P) await api('PATCH', 'tienda_productos?id=eq.' + EDIT_P, { body }); else await api('POST', 'tienda_productos', { body });
       resetProducto();
       return t('p_ok');
