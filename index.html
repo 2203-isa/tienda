@@ -261,6 +261,9 @@ dialog:not([open]){display:none}
 
 /* ---------- Panel administrador ---------- */
 .admin-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.admin-tools{display:flex;gap:8px;flex-wrap:wrap}
+.btn-gold{background:var(--gold);color:#241a04}
+.btn-gold:hover{background:#f3cb6b}
 .admin-warn{margin-top:14px;border:1px solid #5d4a1f;background:#1f190c;color:#f2d68c;padding:12px 14px;border-radius:12px;font-size:.92rem}
 .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:20px}
 .form-grid label{display:block;font-weight:600;font-size:.92rem;margin-bottom:6px}
@@ -439,7 +442,10 @@ input[type=file].field{padding:9px 12px;height:auto}
         <h2 data-i18n="adm_title">Panel administrador</h2>
         <p class="block-lead" data-i18n="adm_lead">Agrega, edita o borra productos desde tu celular o computador.</p>
       </div>
-      <button class="btn btn-line btn-small" type="button" id="admSalir" data-i18n="adm_exit">Salir del panel</button>
+      <div class="admin-tools">
+        <a class="btn btn-gold btn-small" id="admConta" href="contabilidad.html" data-i18n="adm_conta">Contabilidad</a>
+        <button class="btn btn-line btn-small" type="button" id="admSalir" data-i18n="adm_exit">Salir del panel</button>
+      </div>
     </div>
     <p class="admin-warn" data-i18n="adm_warn">Los productos que agregues aquí se guardan solo en este dispositivo: tus clientes todavía no los ven. Para que aparezcan por Internet falta conectar la tienda a Supabase.</p>
     <p class="admin-warn" id="admSinMemoria" hidden data-i18n="adm_nomem">Este visor no permite guardar: lo que agregues aquí se borra al cerrar la página. Para que se conserve, abre la tienda en el navegador (Chrome o Safari) desde su enlace publicado.</p>
@@ -745,6 +751,7 @@ const TEXTOS = {
     adm_title: "Panel administrador",
     adm_lead: "Agrega, edita o borra productos desde tu celular o computador.",
     adm_exit: "Salir del panel",
+    adm_conta: "Contabilidad",
     adm_warn: "Los productos que agregues aquí se guardan solo en este dispositivo: tus clientes todavía no los ven. Para que aparezcan por Internet falta conectar la tienda a Supabase.",
     adm_nomem: "Este visor no permite guardar: lo que agregues aquí se borra al cerrar la página. Para que se conserve, abre la tienda en el navegador (Chrome o Safari) desde su enlace publicado.",
     adm_photo: "Foto del producto",
@@ -917,6 +924,7 @@ const TEXTOS = {
     adm_title: "Painel do administrador",
     adm_lead: "Adicione, edite ou apague produtos pelo celular ou pelo computador.",
     adm_exit: "Sair do painel",
+    adm_conta: "Contabilidade",
     adm_warn: "Os produtos que você adicionar aqui ficam salvos só neste dispositivo: seus clientes ainda não os veem. Para aparecerem na Internet falta conectar a loja ao Supabase.",
     adm_nomem: "Este visualizador não permite salvar: o que você adicionar aqui é apagado ao fechar a página. Para manter, abra a loja no navegador (Chrome ou Safari) pelo link publicado.",
     adm_photo: "Foto do produto",
@@ -1089,6 +1097,7 @@ const TEXTOS = {
     adm_title: "Admin panel",
     adm_lead: "Add, edit or delete products from your phone or computer.",
     adm_exit: "Leave panel",
+    adm_conta: "Accounting",
     adm_warn: "Products you add here are saved only on this device: your customers cannot see them yet. To show them online, the store still needs to be connected to Supabase.",
     adm_nomem: "This viewer cannot save anything: what you add here is erased when you close the page. To keep it, open the store in a browser (Chrome or Safari) from its published link.",
     adm_photo: "Product photo",
