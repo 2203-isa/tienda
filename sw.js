@@ -1,6 +1,6 @@
 /* Service worker de H.H | M.F. Store: guarda la tienda en el dispositivo para que la app abra al instante
    y también sin conexión. Cada vez que hay Internet, descarga en segundo plano la versión más nueva. */
-const CACHE = 'hhmf-6d333ed6f6';
+const CACHE = 'hhmf-21c8268489';
 const SHELL = ['./', 'index.html', 'contabilidad.html', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'maskable-512.png', 'apple-touch-icon.png', 'favicon-48.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', e => {
@@ -11,6 +11,7 @@ self.addEventListener('fetch', e => {
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;     // WhatsApp, CEP y los datos de la contabilidad van directo a Internet (nunca se guardan aquí)
+  if (req.headers.has('range') || /\.(mp4|webm)$/.test(url.pathname)) return;   // el video de entrada va directo (no se guarda aquí)
   const page = url.pathname.endsWith('/contabilidad.html') ? 'contabilidad.html' : 'index.html';
   const key = req.mode === 'navigate' ? page : req;
   e.respondWith(caches.open(CACHE).then(async cache => {

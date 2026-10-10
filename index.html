@@ -34,6 +34,24 @@
 [hidden]{display:none!important}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 html.no-scroll{overflow:hidden}
+/* ---------- Entrada con video ---------- */
+.intro{position:fixed;inset:0;z-index:100;background:#03050a;display:grid;place-items:center;overflow:hidden;transition:opacity .6s ease}
+.intro::before{content:"";position:absolute;inset:-40px;background:url(intro.jpg) center/cover no-repeat;filter:blur(28px) brightness(.55);transform:scale(1.1)}
+.intro video{position:relative;height:100%;width:100%;max-width:calc(100vh * 9 / 16);object-fit:contain;background:transparent}
+.intro.out{opacity:0;pointer-events:none}
+.intro-gate{position:absolute;left:0;right:0;bottom:0;padding:24px 20px calc(48px + env(safe-area-inset-bottom,0px));display:flex;justify-content:center;
+  background:linear-gradient(180deg,rgba(3,5,10,0),rgba(3,5,10,.75) 55%)}
+.intro-enter{display:inline-flex;align-items:center;gap:12px;min-height:58px;padding:0 30px;border-radius:999px;border:1px solid rgba(255,226,160,.7);cursor:pointer;
+  font-family:var(--display);font-weight:700;font-size:1.15rem;letter-spacing:.04em;color:#1a1204;
+  background:linear-gradient(135deg,#ffe7a6,#e8b84a 45%,#e7a889);box-shadow:0 0 0 6px rgba(232,184,74,.16),0 10px 40px rgba(232,184,74,.35)}
+.intro-enter:hover{filter:brightness(1.06)}
+.intro-enter:focus-visible{outline:3px solid #fff;outline-offset:4px}
+.intro-skip{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:14px;min-height:40px;padding:0 16px;border-radius:999px;cursor:pointer;
+  border:1px solid rgba(255,255,255,.35);background:rgba(3,5,10,.55);color:#fff;font-weight:700;font-size:.9rem;backdrop-filter:blur(6px)}
+.intro-skip:hover{background:rgba(3,5,10,.8)}
+.intro.playing .intro-gate{opacity:0;pointer-events:none;transition:opacity .3s}
+@media (prefers-reduced-motion:no-preference){.intro-enter{animation:introPulse 2.2s ease-in-out infinite}}
+@keyframes introPulse{0%,100%{box-shadow:0 0 0 6px rgba(232,184,74,.16),0 10px 40px rgba(232,184,74,.3)}50%{box-shadow:0 0 0 12px rgba(232,184,74,.08),0 10px 55px rgba(232,184,74,.5)}}
 body{margin:0;background:var(--bg);color:var(--txt);font-family:var(--body);font-size:16px;line-height:1.5}
 img{max-width:100%;display:block}
 h1,h2,h3,p{margin:0}
@@ -352,6 +370,38 @@ input[type=file].field{padding:9px 12px;height:auto}
 </style>
 </head>
 <body>
+
+<!-- Entrada con video y música (solo en la tienda publicada; se muestra como máximo cada 6 horas) -->
+<div class="intro" id="intro" hidden data-on="true">
+  <video id="introVideo" playsinline webkit-playsinline preload="none" poster="intro.jpg" aria-label="Video de presentación de H.H | M.F. Store" data-i18n-attr="aria-label:intro_label">
+    <source data-src="intro.mp4" type="video/mp4">
+    <source data-src="intro.webm" type="video/webm">
+  </video>
+  <div class="intro-gate" id="introGate">
+    <button class="intro-enter" id="introEntrar" type="button">
+      <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg>
+      <span data-i18n="intro_enter">Entrar a la tienda</span>
+    </button>
+  </div>
+  <button class="intro-skip" id="introSaltar" type="button" data-i18n="intro_skip">Saltar</button>
+</div>
+<script>
+/* Decide al instante si se muestra la entrada, para que la tienda no aparezca antes por un segundo. */
+(function () {
+  var el = document.getElementById('intro');
+  try {
+    if (el.getAttribute('data-on') !== 'true') return;
+    if (location.hash && location.hash.length > 1) return;                       // enlaces directos (#admin, #catalogo…)
+    if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var ultima = 0; try { ultima = Number(JSON.parse(localStorage.getItem('hhmf_intro'))) || 0; } catch (e) {}
+    if (Date.now() - ultima < 6 * 3600 * 1000) return;
+    var v = document.getElementById('introVideo');
+    Array.prototype.forEach.call(v.querySelectorAll('source'), function (s) { s.src = s.getAttribute('data-src'); });
+    v.preload = 'auto'; v.load();
+    el.hidden = false; document.documentElement.classList.add('no-scroll', 'con-intro');
+  } catch (e) { el.hidden = true; }
+})();
+</script>
 
 <header class="site-head">
   <div class="wrap head-row">
@@ -794,6 +844,9 @@ const TEXTOS = {
     adm_title: "Panel administrador",
     adm_exit: "Salir del panel",
     adm_conta: "Contabilidad",
+    intro_enter: "Entrar a la tienda",
+    intro_skip: "Saltar",
+    intro_label: "Video de presentación de H.H | M.F. Store",
     adm_lead: "Agrega productos y cambia precios, fotos y cantidades. Lo que guardes aquí lo ven todos tus clientes.",
     adm_cloud_intro: "Para guardar en Internet, conéctate con el correo y la clave de la contabilidad (no es el PIN).",
     adm_cloud_email: "Correo",
@@ -998,6 +1051,9 @@ const TEXTOS = {
     adm_title: "Painel do administrador",
     adm_exit: "Sair do painel",
     adm_conta: "Contabilidade",
+    intro_enter: "Entrar na loja",
+    intro_skip: "Pular",
+    intro_label: "Vídeo de apresentação da H.H | M.F. Store",
     adm_lead: "Adicione produtos e mude preços, fotos e quantidades. O que você salvar aqui todos os seus clientes veem.",
     adm_cloud_intro: "Para salvar na Internet, conecte-se com o e-mail e a senha da contabilidade (não é o PIN).",
     adm_cloud_email: "E-mail",
@@ -1202,6 +1258,9 @@ const TEXTOS = {
     adm_title: "Admin panel",
     adm_exit: "Leave panel",
     adm_conta: "Accounting",
+    intro_enter: "Enter the store",
+    intro_skip: "Skip",
+    intro_label: "H.H | M.F. Store intro video",
     adm_lead: "Add products and change prices, photos and quantities. Everything you save here is seen by all your customers.",
     adm_cloud_intro: "To save online, connect with the accounting email and password (not the PIN).",
     adm_cloud_email: "Email",
@@ -2331,6 +2390,39 @@ function iniciarTienda() {
   cargarCatalogoNube();
   // si la tienda queda abierta (por ejemplo, instalada como app), se actualiza al volver a ella
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') cargarCatalogoNube(); });
+  /* ---------- Entrada con video y música ---------- */
+  // El sonido solo puede empezar después de un toque (regla de los navegadores): por eso el botón "Entrar".
+  (function () {
+    const el = $('#intro'); if (!el || el.hidden) return;
+    const v = $('#introVideo'); let cerrado = false, fallo = false, vigia = null;
+    function cerrar() {
+      if (cerrado) return; cerrado = true; clearTimeout(vigia);
+      store.set('hhmf_intro', Date.now());
+      el.classList.add('out');
+      try { v.pause(); } catch (e) { /* nada */ }
+      setTimeout(() => {
+        el.hidden = true;
+        $$('source', v).forEach(src => src.removeAttribute('src')); try { v.load(); } catch (e) { /* nada */ }
+        document.documentElement.classList.remove('no-scroll', 'con-intro');
+      }, 650);
+    }
+    v.addEventListener('ended', cerrar);
+    v.addEventListener('error', () => { fallo = true; });
+    const ultima = $$('source', v).pop(); if (ultima) ultima.addEventListener('error', () => { fallo = true; });
+    $('#introSaltar').addEventListener('click', cerrar);
+    $('#introEntrar').addEventListener('click', () => {
+      if (fallo || v.error) { cerrar(); return; }
+      el.classList.add('playing');
+      v.muted = false;
+      try { v.currentTime = 0; } catch (e) { /* nada */ }
+      const p = v.play();
+      if (p && p.catch) p.catch(() => { v.muted = true; v.play().catch(cerrar); });
+      vigia = setTimeout(() => { if (v.currentTime < 0.2) cerrar(); }, 6000);   // Internet muy lento: no se queda trabado
+    });
+    document.addEventListener('keydown', e => { if (!cerrado && !el.hidden && e.key === 'Escape') cerrar(); });
+    if (window.matchMedia && matchMedia('(pointer:fine)').matches) setTimeout(() => { if (!cerrado) $('#introEntrar').focus({ preventScroll: true }); }, 60);
+  })();
+
   /* ---------- Instalar como app (celular, tablet y computador) ---------- */
   // Solo funciona cuando la tienda está publicada en su propia dirección (https) con su manifiesto.
   const installBtn = $('#installBtn'), iosDialog = $('#iosDialog');
