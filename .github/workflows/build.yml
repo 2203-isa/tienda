@@ -1,13 +1,16 @@
-name: Compilar APK
+name: HH Limpia - Compilar APK
 
 on:
   push:
-    branches: [main]
+    branches: [hh-limpia-app]
   workflow_dispatch:
 
 permissions:
   contents: write
-  issues: write
+
+concurrency:
+  group: hh-limpia
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -30,21 +33,26 @@ jobs:
           set -o pipefail
           gradle :app:assembleRelease --no-daemon --stacktrace 2>&1 | tee build.log
 
-      - name: Reportar error de compilación
-        if: failure()
+      - name: Guardar informe (rama hh-limpia-log)
+        if: always()
         shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
           {
-            echo "Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            echo "# Compilación #${{ github.run_number }} — ${{ job.status }}"
+            echo "Commit: ${{ github.sha }}"
             echo '```'
-            grep -E "^e: |error:|What went wrong|Could not|FAILURE|Execution failed" -A4 build.log | cut -c1-500 | head -250 || true
+            grep -E "^e: |^w: .*(error)|error:|What went wrong|Could not|FAILURE|BUILD|Execution failed|Unresolved|Caused by" -A3 build.log | cut -c1-400 | head -300 || true
             echo '----- final del log -----'
-            tail -60 build.log | cut -c1-500 || true
+            tail -80 build.log | cut -c1-400 || true
             echo '```'
-          } | head -c 60000 > err.md
-          gh issue create --title "Error de compilación #${{ github.run_number }}" --body-file err.md
+          } > /tmp/informe.md
+          ls -la app/build/outputs/apk/release/ >> /tmp/informe.md 2>&1 || true
+          cd /tmp && rm -rf logrepo && mkdir logrepo && cd logrepo
+          git init -q -b hh-limpia-log
+          cp /tmp/informe.md informe.md
+          git add informe.md
+          git -c user.name="github-actions" -c user.email="actions@github.com" commit -q -m "Informe de compilación #${{ github.run_number }}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" hh-limpia-log
 
       - name: Publicar APK
         shell: bash
@@ -52,7 +60,9 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cp app/build/outputs/apk/release/app-release.apk HH-Limpia.apk
-          gh release create "v1.0.${{ github.run_number }}" HH-Limpia.apk \
-            --title "HH Limpia 1.0.${{ github.run_number }}" \
-            --notes "Descarga **HH-Limpia.apk** desde el celular e instálalo (permite 'instalar apps desconocidas' si Android lo pide)." \
-            --latest
+          gh release create "hh-limpia-1.0.${{ github.run_number }}" HH-Limpia.apk \
+            --repo "${{ github.repository }}" \
+            --target "${{ github.sha }}" \
+            --title "HH Limpia 1.0.${{ github.run_number }} (app para limpiar el celular)" \
+            --notes "App HH Limpia (no es parte de la tienda). Descarga **HH-Limpia.apk** desde el celular e instálalo." \
+            --prerelease
