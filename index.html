@@ -371,7 +371,7 @@ input[type=file].field{padding:9px 12px;height:auto}
 </head>
 <body>
 
-<!-- Entrada con video y música (solo en la tienda publicada; se muestra como máximo cada 6 horas) -->
+<!-- Entrada con video y música (solo en la tienda publicada): sale cada vez que se abre la app o se vuelve a ella -->
 <div class="intro" id="intro" hidden data-on="true">
   <video id="introVideo" playsinline webkit-playsinline preload="none" poster="intro.jpg" aria-label="Video de presentación de H.H | M.F. Store" data-i18n-attr="aria-label:intro_label">
     <source data-src="intro.mp4" type="video/mp4">
@@ -393,8 +393,6 @@ input[type=file].field{padding:9px 12px;height:auto}
     if (el.getAttribute('data-on') !== 'true') return;
     if (location.hash && location.hash.length > 1) return;                       // enlaces directos (#admin, #catalogo…)
     if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    var ultima = 0; try { ultima = Number(JSON.parse(localStorage.getItem('hhmf_intro'))) || 0; } catch (e) {}
-    if (Date.now() - ultima < 6 * 3600 * 1000) return;
     var v = document.getElementById('introVideo');
     Array.prototype.forEach.call(v.querySelectorAll('source'), function (s) { s.src = s.getAttribute('data-src'); });
     v.preload = 'auto'; v.load();
@@ -2391,16 +2389,36 @@ function iniciarTienda() {
   // si la tienda queda abierta (por ejemplo, instalada como app), se actualiza al volver a ella
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') cargarCatalogoNube(); });
   /* ---------- Entrada con video y música ---------- */
+  // Sale cada vez que se abre la tienda y cada vez que se vuelve a ella después de salir (10 s o más fuera).
   // El sonido solo puede empezar después de un toque (regla de los navegadores): por eso el botón "Entrar".
   (function () {
-    const el = $('#intro'); if (!el || el.hidden) return;
-    const v = $('#introVideo'); let cerrado = false, fallo = false, vigia = null;
+    const el = $('#intro');
+    if (!el || el.getAttribute('data-on') !== 'true') return;
+    if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const v = $('#introVideo'), FUERA = 10000;
+    let cerrado = el.hidden, fallo = false, vigia = null, ocultar = null, salio = 0;
+    const fino = () => window.matchMedia && matchMedia('(pointer:fine)').matches;
+    function cargarVideo() {
+      fallo = false;
+      $$('source', v).forEach(src => { src.src = src.getAttribute('data-src'); });
+      v.preload = 'auto'; try { v.load(); } catch (e) { /* nada */ }
+    }
+    function abrir() {
+      if (!adminEl.hidden) return;                       // no interrumpe al dueño mientras trabaja en el panel
+      clearTimeout(vigia); clearTimeout(ocultar);
+      closeCart(); $$('dialog[open]').forEach(d => hideDialog(d));
+      cerrado = false;
+      el.classList.remove('out', 'playing'); el.hidden = false;
+      document.documentElement.classList.add('no-scroll', 'con-intro');
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });   // la tienda vuelve a empezar desde arriba (sin animación)
+      cargarVideo();
+      if (fino()) setTimeout(() => { if (!cerrado) $('#introEntrar').focus({ preventScroll: true }); }, 60);
+    }
     function cerrar() {
       if (cerrado) return; cerrado = true; clearTimeout(vigia);
-      store.set('hhmf_intro', Date.now());
       el.classList.add('out');
       try { v.pause(); } catch (e) { /* nada */ }
-      setTimeout(() => {
+      ocultar = setTimeout(() => {
         el.hidden = true;
         $$('source', v).forEach(src => src.removeAttribute('src')); try { v.load(); } catch (e) { /* nada */ }
         document.documentElement.classList.remove('no-scroll', 'con-intro');
@@ -2417,10 +2435,19 @@ function iniciarTienda() {
       try { v.currentTime = 0; } catch (e) { /* nada */ }
       const p = v.play();
       if (p && p.catch) p.catch(() => { v.muted = true; v.play().catch(cerrar); });
-      vigia = setTimeout(() => { if (v.currentTime < 0.2) cerrar(); }, 6000);   // Internet muy lento: no se queda trabado
+      clearTimeout(vigia);
+      vigia = setTimeout(() => { if (!cerrado && v.currentTime < 0.2) cerrar(); }, 6000);   // Internet muy lento: no se queda trabado
     });
     document.addEventListener('keydown', e => { if (!cerrado && !el.hidden && e.key === 'Escape') cerrar(); });
-    if (window.matchMedia && matchMedia('(pointer:fine)').matches) setTimeout(() => { if (!cerrado) $('#introEntrar').focus({ preventScroll: true }); }, 60);
+    // Al salir de la app se pausa; al volver, la presentación empieza otra vez desde el inicio.
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') {
+        salio = Date.now();
+        if (!cerrado) { try { v.pause(); } catch (e) { /* nada */ } el.classList.remove('playing'); clearTimeout(vigia); }
+      } else if (salio && Date.now() - salio >= FUERA) { salio = 0; abrir(); }
+    });
+    window.addEventListener('pageshow', e => { if (e.persisted) abrir(); });     // volver con el botón "atrás"
+    if (!cerrado && fino()) setTimeout(() => { if (!cerrado) $('#introEntrar').focus({ preventScroll: true }); }, 60);
   })();
 
   /* ---------- Instalar como app (celular, tablet y computador) ---------- */

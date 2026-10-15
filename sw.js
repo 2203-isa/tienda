@@ -1,6 +1,6 @@
 /* Service worker de H.H | M.F. Store: guarda la tienda en el dispositivo para que la app abra al instante
    y también sin conexión. Cada vez que hay Internet, descarga en segundo plano la versión más nueva. */
-const CACHE = 'hhmf-21c8268489';
+const CACHE = 'hhmf-f605b19505';
 const SHELL = ['./', 'index.html', 'contabilidad.html', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'maskable-512.png', 'apple-touch-icon.png', 'favicon-48.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', e => {
