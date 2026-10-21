@@ -1,4 +1,6 @@
-# HH Limpia ✨
+# HH SmartClean AI ✨
+
+_Tu espacio limpio, tus archivos seguros._
 
 App Android para liberar espacio en el celular:
 
@@ -12,11 +14,11 @@ Todo se borra **de una vez**: marcas lo que quieras y Android pide una sola conf
 
 ## Instalar
 
-1. En el celular abre la página **Releases** de este repositorio y descarga `HH-Limpia.apk`.
+1. En el celular abre la página **Releases** de este repositorio y descarga `HH-SmartClean-AI.apk`.
 2. Ábrelo. Si Android lo pide, permite "Instalar apps desconocidas" para tu navegador.
-3. Abre HH Limpia y da los permisos.
+3. Abre HH SmartClean AI y da los permisos.
 
-Cada vez que se sube un cambio a `main`, GitHub compila un APK nuevo automáticamente.
+Cada vez que se sube un cambio a la rama `hh-limpia-app`, GitHub compila un APK nuevo automáticamente.
 
 ## Notas
 

@@ -7,38 +7,39 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
+// Colores tomados del logo de HH SmartClean AI (azul eléctrico + naranja de la carpeta).
 private val Light = lightColorScheme(
-    primary = Color(0xFF00796B),
+    primary = Color(0xFF0B5FD9),
     onPrimary = Color.White,
-    primaryContainer = Color(0xFFB2DFDB),
-    onPrimaryContainer = Color(0xFF00201C),
-    secondary = Color(0xFFE65100),
+    primaryContainer = Color(0xFFD6E4FF),
+    onPrimaryContainer = Color(0xFF001A43),
+    secondary = Color(0xFFE67700),
     onSecondary = Color.White,
-    secondaryContainer = Color(0xFFFFE0B2),
-    onSecondaryContainer = Color(0xFF2E1500),
-    tertiary = Color(0xFF3949AB),
+    secondaryContainer = Color(0xFFFFE2BF),
+    onSecondaryContainer = Color(0xFF2E1600),
+    tertiary = Color(0xFF00A6E0),
     error = Color(0xFFC62828),
     errorContainer = Color(0xFFFFDAD6),
-    background = Color(0xFFF7FAF9),
-    surface = Color(0xFFF7FAF9),
-    surfaceVariant = Color(0xFFDDE6E3),
+    background = Color(0xFFF5F8FE),
+    surface = Color(0xFFF5F8FE),
+    surfaceVariant = Color(0xFFDDE5F3),
 )
 
 private val Dark = darkColorScheme(
-    primary = Color(0xFF4DD0B5),
-    onPrimary = Color(0xFF00382F),
-    primaryContainer = Color(0xFF005046),
-    onPrimaryContainer = Color(0xFFB2F2E3),
-    secondary = Color(0xFFFFB74D),
-    onSecondary = Color(0xFF3E2000),
-    secondaryContainer = Color(0xFF5C3100),
-    onSecondaryContainer = Color(0xFFFFDDB8),
-    tertiary = Color(0xFF9FA8DA),
+    primary = Color(0xFF8CC4FF),
+    onPrimary = Color(0xFF002F66),
+    primaryContainer = Color(0xFF0A438F),
+    onPrimaryContainer = Color(0xFFD6E4FF),
+    secondary = Color(0xFFFFB866),
+    onSecondary = Color(0xFF452400),
+    secondaryContainer = Color(0xFF633500),
+    onSecondaryContainer = Color(0xFFFFE2BF),
+    tertiary = Color(0xFF5CD3FF),
     error = Color(0xFFFF8A80),
     errorContainer = Color(0xFF5C1A16),
-    background = Color(0xFF0F1513),
-    surface = Color(0xFF0F1513),
-    surfaceVariant = Color(0xFF26302D),
+    background = Color(0xFF070D1C),
+    surface = Color(0xFF070D1C),
+    surfaceVariant = Color(0xFF1C2638),
 )
 
 @Composable

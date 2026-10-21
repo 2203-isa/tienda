@@ -3,6 +3,8 @@
 package com.hh.limpia.ui
 
 import android.os.Build
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -43,7 +45,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -53,6 +58,7 @@ import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
 import com.hh.limpia.DeleteMode
 import com.hh.limpia.MainViewModel
+import com.hh.limpia.R
 import com.hh.limpia.UiActions
 import com.hh.limpia.formatBytes
 import com.hh.limpia.formatCount
@@ -106,7 +112,13 @@ fun AppRoot(vm: MainViewModel, act: UiActions) {
 @Composable
 private fun Header(vm: MainViewModel) {
     val cs = MaterialTheme.colorScheme
-    Surface(color = cs.primary, contentColor = cs.onPrimary) {
+    Surface(
+        color = Color.Transparent,
+        contentColor = Color.White,
+        modifier = Modifier.background(
+            Brush.horizontalGradient(listOf(Color(0xFF061650), Color(0xFF0B47B8)))
+        ),
+    ) {
         Column(
             Modifier
                 .fillMaxWidth()
@@ -114,16 +126,32 @@ private fun Header(vm: MainViewModel) {
                 .padding(horizontal = 16.dp, vertical = 8.dp)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    "HH Limpia ✨",
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.weight(1f),
+                Image(
+                    painter = painterResource(R.drawable.logo),
+                    contentDescription = "Logo HH SmartClean AI",
+                    modifier = Modifier
+                        .size(46.dp)
+                        .clip(RoundedCornerShape(12.dp)),
                 )
+                Spacer(Modifier.width(10.dp))
+                Column(Modifier.weight(1f)) {
+                    Text(
+                        "HH SmartClean AI",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1,
+                    )
+                    Text(
+                        "Tu espacio limpio, tus archivos seguros.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color(0xFFB9D7FF),
+                        maxLines = 1,
+                    )
+                }
                 if (vm.tab in 0..2 && vm.hasMediaPermission) {
                     TextButton(
                         onClick = { vm.loadMedia() },
-                        colors = ButtonDefaults.textButtonColors(contentColor = cs.onPrimary),
+                        colors = ButtonDefaults.textButtonColors(contentColor = Color.White),
                     ) { Text("🔄 Recargar") }
                 }
             }
@@ -143,7 +171,7 @@ private fun Header(vm: MainViewModel) {
                         .height(6.dp)
                         .clip(RoundedCornerShape(3.dp)),
                     color = cs.secondary,
-                    trackColor = cs.onPrimary.copy(alpha = 0.3f),
+                    trackColor = Color.White.copy(alpha = 0.3f),
                 )
             }
             if (vm.hasMediaPermission && vm.media.isNotEmpty()) {
@@ -166,21 +194,21 @@ private fun Header(vm: MainViewModel) {
                     )
                     TextButton(
                         onClick = { vm.pauseAnalysis() },
-                        colors = ButtonDefaults.textButtonColors(contentColor = cs.onPrimary),
+                        colors = ButtonDefaults.textButtonColors(contentColor = Color.White),
                     ) { Text("Pausar") }
                 }
                 if (p.total > 0) {
                     LinearProgressIndicator(
                         progress = { (p.done.toFloat() / p.total).coerceIn(0f, 1f) },
                         modifier = Modifier.fillMaxWidth().height(4.dp),
-                        color = cs.onPrimary,
-                        trackColor = cs.onPrimary.copy(alpha = 0.25f),
+                        color = Color.White,
+                        trackColor = Color.White.copy(alpha = 0.25f),
                     )
                 } else {
                     LinearProgressIndicator(
                         modifier = Modifier.fillMaxWidth().height(4.dp),
-                        color = cs.onPrimary,
-                        trackColor = cs.onPrimary.copy(alpha = 0.25f),
+                        color = Color.White,
+                        trackColor = Color.White.copy(alpha = 0.25f),
                     )
                 }
             } else if (vm.analysisPaused && vm.hasMediaPermission) {
@@ -188,7 +216,7 @@ private fun Header(vm: MainViewModel) {
                     Text("⏸️ Análisis en pausa", style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(1f))
                     TextButton(
                         onClick = { vm.startAnalysis() },
-                        colors = ButtonDefaults.textButtonColors(contentColor = cs.onPrimary),
+                        colors = ButtonDefaults.textButtonColors(contentColor = Color.White),
                     ) { Text("Continuar") }
                 }
             }

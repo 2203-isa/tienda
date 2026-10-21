@@ -1,4 +1,4 @@
-name: HH Limpia - Compilar APK
+name: HH SmartClean AI - Compilar APK
 
 on:
   push:
@@ -59,10 +59,10 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          cp app/build/outputs/apk/release/app-release.apk HH-Limpia.apk
-          gh release create "hh-limpia-1.0.${{ github.run_number }}" HH-Limpia.apk \
+          cp app/build/outputs/apk/release/app-release.apk HH-SmartClean-AI.apk
+          gh release create "smartclean-1.0.${{ github.run_number }}" HH-SmartClean-AI.apk \
             --repo "${{ github.repository }}" \
             --target "${{ github.sha }}" \
-            --title "HH Limpia 1.0.${{ github.run_number }} (app para limpiar el celular)" \
-            --notes "App HH Limpia (no es parte de la tienda). Descarga **HH-Limpia.apk** desde el celular e instálalo." \
+            --title "HH SmartClean AI 1.0.${{ github.run_number }} (app para limpiar el celular)" \
+            --notes "App HH SmartClean AI (no es parte de la tienda). Descarga **HH-SmartClean-AI.apk** desde el celular e instálalo." \
             --prerelease

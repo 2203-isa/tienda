@@ -74,7 +74,7 @@ fun AppsScreen(vm: MainViewModel, act: UiActions) {
                             Text("Falta un permiso", fontWeight = FontWeight.Bold)
                             Text(
                                 "Para saber cuánto pesa cada app y hace cuánto no la usas, Android pide un permiso especial " +
-                                    "llamado \"Acceso al uso\" (o \"Acceso a datos de uso\"). Busca HH Limpia en la lista y actívalo."
+                                    "llamado \"Acceso al uso\" (o \"Acceso a datos de uso\"). Busca HH SmartClean AI en la lista y actívalo."
                             )
                             Button(onClick = { act.openUsageSettings() }) { Text("Dar permiso") }
                         }
